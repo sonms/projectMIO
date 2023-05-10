@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var resultLauncher: ActivityResultLauncher<Intent>
     lateinit var mBinding : ActivityMainBinding
+    val test = "test"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
