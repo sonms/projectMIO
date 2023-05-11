@@ -26,7 +26,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var resultLauncher: ActivityResultLauncher<Intent>
     lateinit var mBinding : ActivityMainBinding
-    val test = "test"
+    private val CLIENT_WEB_ID_KEY = BuildConfig.client_web_id_key
+    private val CLIENT_WEB_SECRET_KEY = BuildConfig.client_web_secret_key
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             //.requestIdToken(R.string.defalut_client_id.toString())
-            .requestServerAuthCode(getString(R.string.test_client_id))
+            .requestServerAuthCode(CLIENT_WEB_ID_KEY)
             .requestProfile()
             .build()
 
@@ -83,13 +85,13 @@ class MainActivity : AppCompatActivity() {
             .add("grant_type", "authorization_code")
             .add(
                 "client_id",
-                getString(R.string.test_client_id)
+                CLIENT_WEB_ID_KEY
             )
-            .add("client_secret", getString(R.string.test_client_secret))
-                //https://oauth2.googleapis.com/token
-                //https://accounts.google.com/o/oauth2/auth
+            .add("client_secret", CLIENT_WEB_SECRET_KEY)
             .add("redirect_uri", "")
             .add("code", authCode)
+            //refresh token 필요시
+            //.add("access_type", "offline")
             .build()
 
         val request = Request.Builder()
@@ -105,8 +107,30 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call, response: Response) {
                 try {
                     val jsonObject = JSONObject(response.body!!.string())
-                    val message = jsonObject.toString(5)
-                    Log.d("access", message)
+                    val message = jsonObject.keys() //.toString(5)
+
+                    //json파일 키와 벨류를 잠시담는 변수
+                    val tempKey = ArrayList<String>()
+                    val tempValue = ArrayList<String>()
+
+                    val user_info = ArrayList<LoginGoogleResponse>()
+                    user_info.clear()
+                    while (message.hasNext()) {
+                        val s = message.next().toString()
+                        tempKey.add(s)
+                    }
+
+                    for (i in tempKey.indices) {
+                        //fruitValueList.add(fruitObject.getString(fruitKeyList.get(j)));
+                        tempValue.add(jsonObject.getString(tempKey[i]))
+                    }
+
+                    user_info.add(LoginGoogleResponse(tempValue[0], tempValue[1].toInt(), tempValue[2], tempValue[3], tempValue[4]))
+
+                    println(user_info)
+                    //Log.d("access", message)
+                    tempKey.clear()
+                    tempValue.clear()
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
