@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.PackageManagerCompat.LOG_TAG
+import com.example.mio.Model.LoginGoogleResponse
 import com.example.mio.databinding.ActivityMainBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -50,6 +50,10 @@ class MainActivity : AppCompatActivity() {
             signIn()
         }
 
+        mBinding.textView.setOnClickListener {
+            val intent = Intent(this, NoticeBoardActivity::class.java)
+            startActivity(intent)
+        }
 
     }
     private fun setResultSignUp() {
@@ -127,7 +131,7 @@ class MainActivity : AppCompatActivity() {
 
                     user_info.add(LoginGoogleResponse(tempValue[0], tempValue[1].toInt(), tempValue[2], tempValue[3], tempValue[4]))
 
-                    println(user_info)
+                    //println(user_info)
                     //Log.d("access", message)
                     tempKey.clear()
                     tempValue.clear()

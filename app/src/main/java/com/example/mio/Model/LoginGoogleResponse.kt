@@ -1,4 +1,4 @@
-package com.example.mio
+package com.example.mio.Model
 
 data class LoginGoogleResponse(
     var access_token: String = "",
