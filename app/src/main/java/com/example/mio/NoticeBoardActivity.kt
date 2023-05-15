@@ -41,12 +41,11 @@ class NoticeBoardActivity : AppCompatActivity() {
                 CoroutineScope(Dispatchers.IO).launch {
                     val temp = data[position]
                     dataPosition = position
-                    /*val intent = Intent(activity, HomeEditActivity::class.java).apply {
-                        putExtra("type", "edit")
-                        putExtra("item", todo)
-                        putExtra("categoryNameData", categoryTempData)
+                    val intent = Intent(this@NoticeBoardActivity, NoticeBoardReadActivity::class.java).apply {
+                        putExtra("type", "READ")
+                        putExtra("postItem", temp!!)
                     }
-                    requestActivity.launch(intent)*/
+                    requestActivity.launch(intent)
                 }
             }
         })

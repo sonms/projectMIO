@@ -51,7 +51,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         mBinding.textView.setOnClickListener {
-            val intent = Intent(this, NoticeBoardActivity::class.java)
+            val intent = Intent(this, NoticeBoardActivity::class.java).apply {
+                //putExtra("type", "")
+            }
             startActivity(intent)
         }
 

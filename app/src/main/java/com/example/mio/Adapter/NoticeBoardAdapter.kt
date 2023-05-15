@@ -17,9 +17,11 @@ class NoticeBoardAdapter : RecyclerView.Adapter<NoticeBoardAdapter.NoticeBoardVi
         private var position : Int? = null
         var accountId = binding.accountId
         var accountProfile = binding.accountImage
+        var postContent = binding.contentText
         fun bind(accountData: PostData, position : Int) {
             this.position = position
             accountId.text = accountData.accountID
+            postContent.text = accountData.postContent
             //accountProfile.setImageURI() = pillData.pillTakeTime
 
             binding.root.setOnClickListener {
