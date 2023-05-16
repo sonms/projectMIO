@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     >
 
 
@@ -88,10 +89,13 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/comment_RV"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:listitem=""
-        />
-
+        android:layout_height="294dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/read_sub_share_text"
+        tools:listitem="@layout/comment_item" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
