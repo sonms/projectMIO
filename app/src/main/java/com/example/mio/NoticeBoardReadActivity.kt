@@ -1,21 +1,22 @@
 package com.example.mio
 
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.MotionEvent
+import android.view.View
 import android.view.animation.OvershootInterpolator
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.mio.Adapter.NoticeBoardAdapter
 import com.example.mio.Adapter.NoticeBoardReadAdapter
 import com.example.mio.Model.CommentData
 import com.example.mio.Model.PostData
-import com.example.mio.databinding.ActivityNoticeBoardBinding
 import com.example.mio.databinding.ActivityNoticeBoardReadBinding
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+
 
 class NoticeBoardReadActivity : AppCompatActivity() {
     private lateinit var nbrBinding : ActivityNoticeBoardReadBinding
@@ -32,9 +33,9 @@ class NoticeBoardReadActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         nbrBinding = ActivityNoticeBoardReadBinding.inflate(layoutInflater)
-        setContentView(nbrBinding.root)
 
-        initRecyclerView()
+
+
         sendComment()
 
         val type = intent.getStringExtra("type")
@@ -45,10 +46,28 @@ class NoticeBoardReadActivity : AppCompatActivity() {
             nbrBinding.readAccountId.text = temp!!.accountID
         }
 
+        initRecyclerView()
 
 
+        setContentView(nbrBinding.root)
+    }
 
-
+    //edittext가 아닌 다른 곳 클릭 시 내리기
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        val focusView: View? = currentFocus
+        if (focusView != null) {
+            val rect = Rect()
+            focusView.getGlobalVisibleRect(rect)
+            val x = ev.x.toInt()
+            val y = ev.y.toInt()
+            if (!rect.contains(x, y)) {
+                val imm: InputMethodManager =
+                    getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                if (imm != null) imm.hideSoftInputFromWindow(focusView.windowToken, 0)
+                focusView.clearFocus()
+            }
+        }
+        return super.dispatchTouchEvent(ev)
     }
 
     private fun initRecyclerView() {
@@ -72,6 +91,9 @@ class NoticeBoardReadActivity : AppCompatActivity() {
 
     private fun sendComment() {
         var et = ""
+        nbrBinding.messageET.setOnClickListener {
+            nbrBinding.messageET.isCursorVisible = true
+        }
         nbrBinding.messageET.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
@@ -82,15 +104,19 @@ class NoticeBoardReadActivity : AppCompatActivity() {
             override fun afterTextChanged(p0: Editable?) {}
 
         })
+
         nbrBinding.messageSendIV.setOnClickListener {
             if (et.isEmpty()) {
                 Toast.makeText(this@NoticeBoardReadActivity, "내용을 입력하세요.", Toast.LENGTH_SHORT).show()
             } else {
                 //나중에 여기서 데이터 변경하기 현재 로그인된 계정정보로 Todo
                 commentAllData.add(CommentData("2020202", et, 0))
+                //noticeBoardReadAdapter!!.notifyItemInserted(commentAllData[0]!!.commentPosition)
                 noticeBoardReadAdapter!!.notifyDataSetChanged()
                 nbrBinding.messageET.text.clear()
             }
+            //커서 깜빡이 없앰
+            nbrBinding.messageET.isCursorVisible = false
         }
         /*nbrBinding.messageSendIV.setOnClickListener {
             if (et.isEmpty()) {
