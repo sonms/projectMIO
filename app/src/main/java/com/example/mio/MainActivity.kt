@@ -146,4 +146,6 @@ class MainActivity : AppCompatActivity() {
         val signIntent = mGoogleSignInClient.signInIntent
         resultLauncher.launch(signIntent)
     }
+
+
 }
