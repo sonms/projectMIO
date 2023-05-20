@@ -1,4 +1,4 @@
-package com.example.mio
+package com.example.mio.NoticeBoard
 
 import android.graphics.Rect
 import android.os.Bundle

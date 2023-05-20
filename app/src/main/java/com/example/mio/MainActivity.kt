@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mio.Model.LoginGoogleResponse
+import com.example.mio.NoticeBoard.NoticeBoardActivity
 import com.example.mio.databinding.ActivityMainBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -68,11 +69,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     private fun handleSignInResult(completedTask : Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
             val email = account?.email.toString()
             val authCode = account.serverAuthCode
+            val saveSharedPreferenceGoogleLogin = SaveSharedPreferenceGoogleLogin()
+
+            //회원가입과 함께 새로운 계정 정보 저장
+            if (saveSharedPreferenceGoogleLogin.getUserEMAIL(this@MainActivity)!!.isEmpty()) {
+                //나중에 재개편 필요함 -> navigation graph를 정리할 필요성이 있음
+                // call Login Activity
+                /*val intent = Intent(this@MainActivity, LoginActivity::class.java)
+                intent.putExtra("email", saveSharedPreferenceGoogleLogin.setUserEMAIL(this, email).toString())
+                startActivity(intent)
+                finish()*/
+
+            } else { //현재 로그인, 또는 로그인했던 정보가 저장되어있으면 home으로
+                val intent = Intent(this, NoticeBoardActivity::class.java)
+                startActivity(intent)
+                this.finish()
+            }
 
             Toast.makeText(this, "tjd", Toast.LENGTH_SHORT).show()
             println(email)
@@ -134,7 +152,7 @@ class MainActivity : AppCompatActivity() {
                     user_info.add(LoginGoogleResponse(tempValue[0], tempValue[1].toInt(), tempValue[2], tempValue[3], tempValue[4]))
 
                     //println(user_info)
-                    //Log.d("access", message)
+                    println(user_info[0].id_token)
                     tempKey.clear()
                     tempValue.clear()
                 } catch (e: JSONException) {
