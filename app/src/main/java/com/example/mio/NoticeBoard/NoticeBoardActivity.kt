@@ -1,21 +1,15 @@
-package com.example.mio
+package com.example.mio.NoticeBoard
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.animation.OvershootInterpolator
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mio.Adapter.NoticeBoardAdapter
 import com.example.mio.Model.PostData
 import com.example.mio.databinding.ActivityNoticeBoardBinding
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter
-import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -53,8 +47,9 @@ class NoticeBoardActivity : AppCompatActivity() {
             }
         })
 
-        nbBinding.addBtn.setOnClickListener {
-            data.add(PostData("2020202", 0, "test"))
+        //여기서 edit으로 이동동
+       nbBinding.addBtn.setOnClickListener {
+            data.add(PostData("2020202", 0, "test", "test"))
             noticeBoardAdapter!!.notifyItemInserted(position)
             position += 1
         }
@@ -84,6 +79,24 @@ class NoticeBoardActivity : AppCompatActivity() {
     private val requestActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { it ->
         when (it.resultCode) {
             RESULT_OK -> {
+                val post = it.data?.getSerializableExtra("post") as PostData
+                when(it.data?.getIntExtra("flag", -1)) {
+                    //add
+                    0 -> {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            data.add(post)
+                        }
+                        noticeBoardAdapter!!.notifyItemInserted(post.postID)
+                    }
+                    //edit
+                    1 -> {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            data[dataPosition] = post
+                        }
+                        noticeBoardAdapter!!.notifyItemChanged(post.postID)
+                    }
+
+                }
             //getSerializableExtra = intent의 값을 보내고 받을때사용
             //타입 변경을 해주지 않으면 Serializable객체로 만들어지니 as로 캐스팅해주자
             /*val pill = it.data?.getSerializableExtra("pill") as PillData
