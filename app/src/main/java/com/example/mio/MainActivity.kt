@@ -104,6 +104,7 @@ class MainActivity : AppCompatActivity() {
     private fun getAccessToken(authCode : String) {
         val client = OkHttpClient()
         val requestBody: RequestBody = FormBody.Builder()
+                //1시간
             .add("grant_type", "authorization_code")
             .add(
                 "client_id",
@@ -113,7 +114,9 @@ class MainActivity : AppCompatActivity() {
             .add("redirect_uri", "")
             .add("code", authCode)
             //refresh token 필요시
-            //.add("access_type", "offline")
+            .add("response_type", "code")
+            .add("access_type", "offline")
+            .add("approval_prompt", "force")
             .build()
 
         val request = Request.Builder()
@@ -140,16 +143,18 @@ class MainActivity : AppCompatActivity() {
                     while (message.hasNext()) {
                         val s = message.next().toString()
                         tempKey.add(s)
+
                     }
 
                     for (i in tempKey.indices) {
                         //fruitValueList.add(fruitObject.getString(fruitKeyList.get(j)));
                         tempValue.add(jsonObject.getString(tempKey[i]))
+                        println(tempKey[i] + "/" + jsonObject.getString(tempKey[i]))
                     }
 
                     user_info.add(LoginGoogleResponse(tempValue[0], tempValue[1].toInt(), tempValue[2], tempValue[3], tempValue[4]))
-
-                    //println(user_info)
+                    println()
+                    println(message)
                     println(user_info[0].id_token)
                     tempKey.clear()
                     tempValue.clear()
