@@ -52,7 +52,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         mBinding.textView.setOnClickListener {
-            val intent = Intent(this, NoticeBoardActivity::class.java)
+            val intent = Intent(this, NoticeBoardActivity::class.java).apply {
+                //putExtra("type", "")
+            }
             startActivity(intent)
         }
 
@@ -104,7 +106,7 @@ class MainActivity : AppCompatActivity() {
     private fun getAccessToken(authCode : String) {
         val client = OkHttpClient()
         val requestBody: RequestBody = FormBody.Builder()
-                //1시간
+            //1시간
             .add("grant_type", "authorization_code")
             .add(
                 "client_id",
